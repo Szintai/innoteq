@@ -46,4 +46,5 @@ public class Product extends BaseEntity {
     public void setItems(List<Item> items) {
         this.items = items;
     }
+
 }

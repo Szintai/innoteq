@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	<body>
+		<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" th:fragment="header">
+			<a class="navbar-brand" href="/">Innoteq</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarNav">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item">
+						<a class="nav-link" href="/employeeReports">Employee Reports</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="/productReports">Product Reports</a>
+					</li>
+
+				</ul>
+			</div>
+		</nav>
+	</body>
+</html>

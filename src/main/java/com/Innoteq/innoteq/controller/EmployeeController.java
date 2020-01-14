@@ -14,12 +14,7 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
-    @GetMapping("/")
-    public String index()
-    {
 
-        return "index";
-    }
 
 
 
