@@ -5,22 +5,51 @@
 <body>
 <div th:replace="fragments/header :: header"></div>
 
-<form method=post th:action="@{/addProduct}" >
-<select>
+<form method=post th:action="@{/addProduct}" name="addProduct" id="addProduct" onsubmit="return validation()">
+<select id="employeeIds">
 	<div th:each="employee : ${employees}">
-	<option  th:text="${employee.name}" name="employeeId" th:value="${employee.id}"></option>
+	<option  th:text="${employee.name}"  th:value="${employee.id}"></option>
 	</div>
 </select>
 
-<select>
+<select id="productIds">
 	<div th:each="product : ${products}">
 		<option  th:text="${product.name} + ' (' + ${product.price} +' Ft)'" th:value="${product.id}" name="productId"></option>
 	</div>
 </select>
 	<input type="number" name="quantity" placeholder="Quantity">
+	<p hidden><input type="number" id="employeeId" name="employeeId" ></p>
+	<p hidden><input type="number" id="productId" name="productId" ></p>
 	<input type="submit" name="submit" value="Add" />
 
 </form>
+
+<table>
+	<tr th:each="item : ${purchase.items}">
+		<td th:text="${item.price.name}"></td>
+		<td th:text="${item.price}"></td>
+		<td th:text="${item.quantity}"></td>
+		<td>Edit</td>
+		<td>Delete</td>
+	</tr>
+
+</table>
+
+
+<script type="text/javascript">
+function validation(){
+
+	var e = document.getElementById("employeeIds");
+	var selectedEmployeeId = e.options[e.selectedIndex].value;
+	var a = document.getElementById("employeeIds");
+	var selectedProductId = a.options[a.selectedIndex].value;
+
+	document.getElementById('employeeId').value=selectedEmployeeId;
+	document.getElementById('productId').value=selectedProductId;
+
+}
+</script>
+
 
 
 </div>

@@ -22,6 +22,12 @@ public class Item extends BaseEntity {
     public Item() {
     }
 
+    public Item(int quantity, Product product) {
+        this.quantity = quantity;
+        this.product = product;
+        this.price=quantity*product.getPrice();
+    }
+
     public Purchase getPurchase() {
         return purchase;
     }

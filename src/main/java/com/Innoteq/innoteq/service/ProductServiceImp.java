@@ -25,5 +25,10 @@ public class ProductServiceImp implements ProductService {
         return productRepository.findAll();
     }
 
+    @Override
+    public Product findById(Long id) {
+        return productRepository.findById(id).orElse(new Product());
+    }
+
 
 }
