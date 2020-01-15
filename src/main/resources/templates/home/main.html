@@ -17,7 +17,7 @@
 		<option  th:text="${product.name} + ' (' + ${product.price} +' Ft)'" th:value="${product.id}" name="productId"></option>
 	</div>
 </select>
-	<input type="number" name="quantity" placeholder="Quantity">
+	<input type="number" name="quantity" placeholder="Quantity" required>
 	<p hidden><input type="number" id="employeeId" name="employeeId" ></p>
 	<p hidden><input type="number" id="productId" name="productId" ></p>
 	<input type="submit" name="submit" value="Add" />
@@ -25,20 +25,29 @@
 </form>
 
 <table>
-	<form method=post th:action="@{/purchase}" >
-	<tr th:each="item : ${purchase.items}">
 
+		<thead>
+		<tr th:if="${not #lists.isEmpty(purchase.items)}">
+		<td>Product name</td>
+		<td>Price</td>
+		<td>Quantity</td>
+		</tr>
+		</thead>
+		<tbody>
+		<tr th:each="item : ${purchase.items}">
 		<td th:text="${item.product.name}"></td>
-		<td th:text="${item.price}"></td>
-		<td th:text="${item.quantity}"></td>
+		<td th:text="${item.price}+' Ft'"></td>
+		<td th:text="${item.quantity}+' db'"></td>
 		<td>Edit</td>
-		<td>Delete</td>
-	</tr>
-		<input th:if="${not #lists.isEmpty(purchase.items)}" type="submit" name="submit" value="Purchase" />
-	</form>
+		<td><a th:href="@{'/deleteItem=' + ${item.id}}">Delete</a></td>
+		</tr>
+		</tbody>
+
 
 </table>
-
+<form method=post th:action="@{/purchase}" >
+	<input th:if="${not #lists.isEmpty(purchase.items)}" type="submit" name="submit" value="Purchase" />
+</form>
 
 <script type="text/javascript">
 function validation(){

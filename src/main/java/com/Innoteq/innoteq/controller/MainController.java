@@ -42,7 +42,7 @@ public class MainController {
     {
         if(purchase.getEmployee() != null){
             List<Employee> employees=new ArrayList<>();
-            employees.add(selectedEmployee);
+            employees.add(purchase.getEmployee());
             model.addAttribute("employees",employees);
 
             model.addAttribute("products", productService.findAll());
@@ -94,12 +94,12 @@ public class MainController {
         String employeeId= reqParam.get("employeeId");
 
         String productId= reqParam.get("productId");
-        selectedEmployee=employeeService.findById(Long.parseLong(employeeId));
 
-          purchase.setEmployee(selectedEmployee);
+          purchase.setEmployee(employeeService.findById(Long.parseLong(employeeId)));
           Item item=new Item(quantity, productService.findById(Long.parseLong(productId)));
+          item.setId(new Long(purchase.getItems().size()));
           purchase.getItems().add(item);
-
+      //  purchase.getItems().get(purchase.getItems().size()-1).setId(new Long(purchase.getItems().size()-1));
 
         return "redirect:/";
     }
@@ -111,6 +111,21 @@ public class MainController {
         reportEmployee=employeeService.findById(Long.parseLong(employeeId));
 
         return"redirect:/employeeReports";
+    }
+
+    @GetMapping("/deleteItem={itemId}")
+    public String deleteItem(@PathVariable("itemId") Long itemId)
+    {
+        Item item=new Item();
+        List<Item> items=new ArrayList<>();
+        for (Item i: purchase.getItems()) {
+            
+            if(!i.getId().equals(itemId)) items.add(i);
+        }
+
+        purchase.setItems(items);
+
+        return "redirect:/";
     }
 
 }

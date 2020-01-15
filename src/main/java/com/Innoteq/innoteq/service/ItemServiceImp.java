@@ -17,4 +17,9 @@ public class ItemServiceImp implements ItemService {
     public Item save(Item item) {
         return itemRepository.save(item);
     }
+
+    @Override
+    public Item findById(Long id) {
+        return itemRepository.findById(id).orElse(new Item());
+    }
 }

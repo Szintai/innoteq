@@ -20,16 +20,16 @@
 		</form>
 		<table>
 			<tr th:each="purchase : ${reportEmployee.purchases}">
-				<td th:text="'Purchase id: '+${purchase.id}">
-                 <table>
-					<tr th:each="item : ${purchase.items}">
+				<td th:text="'Purchase id: '+${purchase.id}"></td>
+
+					<div th:each="item : ${purchase.items}">
 						<td  th:text="${item.product.name}"></td>
 						<td  th:text="${item.quantity}"></td>
 						<td  th:text="${item.price}"></td>
-					</tr>
-					 </table>
-			</td>
+					</div>
 			</tr>
+
+
 		</table>
 
 
