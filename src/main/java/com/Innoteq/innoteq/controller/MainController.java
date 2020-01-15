@@ -71,17 +71,27 @@ public class MainController {
     }
 
 
+    @PostMapping(value ="/purchase")
+    public String purchase(){
+
+        Employee employee=employeeService.findById(purchase.getEmployee().getId());
+        employee.getPurchases().add(purchase);
+        employeeService.save(employee);
+        purchase=new Purchase();
+
+        return "redirect:/";
+    }
 
 
     @PostMapping(value ="/addProduct")
-    public String addProduct1(@RequestParam Map<String, String> reqParam,
+    public String addProduct(@RequestParam Map<String, String> reqParam,
                               @RequestParam("quantity") int quantity ){
 
         String employeeId= reqParam.get("employeeId");
-        selectedEmployee=employeeService.findById(Long.parseLong(employeeId));
-        String productId= reqParam.get("productId");
 
-          System.out.println(selectedEmployee.getName()+"");
+        String productId= reqParam.get("productId");
+        selectedEmployee=employeeService.findById(Long.parseLong(employeeId));
+      //    System.out.println(selectedEmployee.getName()+"");
 
 
           purchase.setEmployee(selectedEmployee);

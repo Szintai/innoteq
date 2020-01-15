@@ -25,13 +25,17 @@
 </form>
 
 <table>
+	<form method=post th:action="@{/purchase}" >
 	<tr th:each="item : ${purchase.items}">
-		<td th:text="${item.price.name}"></td>
+
+		<td th:text="${item.product.name}"></td>
 		<td th:text="${item.price}"></td>
 		<td th:text="${item.quantity}"></td>
 		<td>Edit</td>
 		<td>Delete</td>
 	</tr>
+		<input th:if="${not #lists.isEmpty(purchase.items)}" type="submit" name="submit" value="Purchase" />
+	</form>
 
 </table>
 
