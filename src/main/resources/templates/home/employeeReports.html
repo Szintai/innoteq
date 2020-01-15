@@ -9,7 +9,43 @@
 <div class="container">
 	<div class="starter-template">
 
+		<form method=post th:action="@{/employeeReports}" name="employeeReports" id="employeeReports" onsubmit="return validation()">
+		<select id="employeeIds">
+			<div th:each="employee : ${employees}">
+				<option  th:text="${employee.name}"  th:value="${employee.id}"></option>
+			</div>
+		</select>
+			<p hidden><input type="number" id="employeeId" name="employeeId" ></p>
+			<input type="submit" name="submit" value="List" />
+		</form>
+		<table>
+			<tr th:each="purchase : ${reportEmployee.purchases}">
+				<td th:text="'Purchase id: '+${purchase.id}">
+                 <table>
+					<tr th:each="item : ${purchase.items}">
+						<td  th:text="${item.product.name}"></td>
+						<td  th:text="${item.quantity}"></td>
+						<td  th:text="${item.price}"></td>
+					</tr>
+					 </table>
+			</td>
+			</tr>
+		</table>
+
+
 	</div>
+
+	<script type="text/javascript">
+function validation(){
+
+	var e = document.getElementById("employeeIds");
+	var selectedEmployeeId = e.options[e.selectedIndex].value;
+
+	document.getElementById('employeeId').value=selectedEmployeeId;
+
+
+}
+</script>
 
 
 

@@ -25,6 +25,7 @@ public class MainController {
     private final PurchaseService purchaseService;
 
     private Employee selectedEmployee=null;
+    private Employee reportEmployee=new Employee();
     private Product selectedProduct=null;
     private Purchase purchase=new Purchase();
 
@@ -57,8 +58,11 @@ public class MainController {
     }
 
     @GetMapping("/employeeReports")
-    public String employeeReports()
+    public String employeeReports(Model model)
     {
+        model.addAttribute("employees", employeeService.findAll());
+        model.addAttribute("reportEmployee", reportEmployee);
+        System.out.println(reportEmployee.getName()+"");
 
         return "home/employeeReports";
     }
@@ -91,8 +95,6 @@ public class MainController {
 
         String productId= reqParam.get("productId");
         selectedEmployee=employeeService.findById(Long.parseLong(employeeId));
-      //    System.out.println(selectedEmployee.getName()+"");
-
 
           purchase.setEmployee(selectedEmployee);
           Item item=new Item(quantity, productService.findById(Long.parseLong(productId)));
@@ -100,6 +102,15 @@ public class MainController {
 
 
         return "redirect:/";
+    }
+
+    @PostMapping(value ="/employeeReports")
+    public String addProduct(@RequestParam Map<String, String> reqParam){
+
+        String employeeId= reqParam.get("employeeId");
+        reportEmployee=employeeService.findById(Long.parseLong(employeeId));
+
+        return"redirect:/employeeReports";
     }
 
 }
