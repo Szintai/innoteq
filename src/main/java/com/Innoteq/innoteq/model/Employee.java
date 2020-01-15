@@ -1,6 +1,7 @@
 package com.Innoteq.innoteq.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -13,7 +14,7 @@ public class Employee extends BaseEntity {
     private String name;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Purchase> purchases;
+    private List<Purchase> purchases=new ArrayList<>();
 
     public Employee() {
     }

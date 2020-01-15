@@ -4,6 +4,8 @@ import com.Innoteq.innoteq.model.Item;
 import com.Innoteq.innoteq.repository.ItemRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ItemServiceImp implements ItemService {
 
@@ -21,5 +23,10 @@ public class ItemServiceImp implements ItemService {
     @Override
     public Item findById(Long id) {
         return itemRepository.findById(id).orElse(new Item());
+    }
+
+    @Override
+    public List<Item> findAll() {
+        return itemRepository.findAll();
     }
 }

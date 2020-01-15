@@ -1,6 +1,7 @@
 package com.Innoteq.innoteq.model;
 
 import javax.persistence.*;
+import java.util.Comparator;
 
 @Entity
 @Table( name = "items")
@@ -60,4 +61,20 @@ public class Item extends BaseEntity {
     public void setProduct(Product product) {
         this.product = product;
     }
+
+
+    public static Comparator<Item> PriceComparator =new Comparator<Item>(){
+
+
+
+        @Override
+        public int compare(Item p1, Item p2){
+
+            int price1=p1.getPrice();
+            int price2=p2.getPrice();
+
+            return Integer.compare(price2,price1);
+
+        }};
+
 }

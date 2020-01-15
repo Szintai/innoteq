@@ -10,10 +10,56 @@
 	<div class="starter-template">
 
 	</div>
+	<form method=post th:action="@{/productReports}" name="productReports" id="productReports" onsubmit="return validation()">
+	<select id="productIds">
+		<div th:each="product : ${products}">
+			<option  th:text="${product.name}"  th:value="${product.id}"></option>
+		</div>
+	</select>
+		<select id="dateIds">
+			<div th:each="date : ${dates}">
+				<option  th:text="${date.year}+'.'+${date.month}+'.'" th:value="${date.id}"></option>
+			</div>
+		</select>
+		<p hidden><input type="number" id="productId" name="productId" ></p>
+		<p hidden><input type="number" id="dateId" name="dateId" ></p>
+		<input type="submit" name="submit" value="List" />
+	</form>
 
-
+	<table>
+		<thead>
+		<tr th:if="${not #lists.isEmpty(items)}">
+			<td>Product name</td>
+			<td>Price</td>
+			<td>Quantity</td>
+		</tr>
+		</thead>
+		<tbody>
+		<tr th:each="item : ${items}">
+			<td  th:text="${item.product.name}"></td>
+			<td  th:text="${item.quantity}+ ' db'"></td>
+			<td  th:text="${item.price}+ ' Ft'"></td>
+		</tr>
+		</tbody>
+	</table>
 
 </div>
+
+<script type="text/javascript">
+function validation(){
+
+	var e = document.getElementById("productIds");
+	var selectedProductId = e.options[e.selectedIndex].value;
+	var a = document.getElementById("dateIds");
+	var selectedDateId = a.options[a.selectedIndex].value;
+
+	document.getElementById('productId').value=selectedProductId;
+	document.getElementById('dateId').value=selectedDateId;
+
+
+}
+</script>
+
 
 <div th:replace="fragments/footer :: footer"></div>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

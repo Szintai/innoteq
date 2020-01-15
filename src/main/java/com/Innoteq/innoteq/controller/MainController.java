@@ -1,9 +1,6 @@
 package com.Innoteq.innoteq.controller;
 
-import com.Innoteq.innoteq.model.Employee;
-import com.Innoteq.innoteq.model.Item;
-import com.Innoteq.innoteq.model.Product;
-import com.Innoteq.innoteq.model.Purchase;
+import com.Innoteq.innoteq.model.*;
 import com.Innoteq.innoteq.service.EmployeeService;
 import com.Innoteq.innoteq.service.ItemService;
 import com.Innoteq.innoteq.service.ProductService;
@@ -12,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,9 +23,12 @@ public class MainController {
     private final PurchaseService purchaseService;
 
     private Employee selectedEmployee=null;
-    private Employee reportEmployee=new Employee();
+    private Employee reportEmployee=null;
+    private Product reportProduct=new Product();
     private Product selectedProduct=null;
     private Purchase purchase=new Purchase();
+    private YearAndMonth selectedYearAndMounth;
+    List<YearAndMonth> yearAndMonths=new ArrayList<>();
 
 
     public MainController(EmployeeService employeeService, ProductService productService, ItemService itemService, PurchaseService purchaseService) {
@@ -74,16 +75,41 @@ public class MainController {
     @GetMapping("/employeeReports")
     public String employeeReports(Model model)
     {
+        List<Item> items=new ArrayList<>();
+        int consumption=0;
+        Employee employee=null;
+
+        if(reportEmployee !=null)
+        { for (Purchase p:reportEmployee.getPurchases()) {
+            for (Item i : p.getItems()) {
+                if (i.getCreatedAt().getYear() == selectedYearAndMounth.getYear() && i.getCreatedAt().getMonth().getValue() == selectedYearAndMounth.getMonth()) {
+                    consumption += i.getPrice();
+                }
+            }
+        }
+        }
         model.addAttribute("employees", employeeService.findAll());
         model.addAttribute("reportEmployee", reportEmployee);
-        System.out.println(reportEmployee.getName()+"");
+        model.addAttribute("consumption",consumption);
+        model.addAttribute("dates", dates());
 
         return "home/employeeReports";
     }
 
     @GetMapping("/productReports")
-    public String productReports()
+    public String productReports(Model model)
     {
+        List<Item> items=new ArrayList<>();
+
+        for (Item item: itemService.findAll()) {
+            if(item.getProduct().getId().equals(reportProduct.getId()) && item.getCreatedAt().getYear() == selectedYearAndMounth.getYear() &&
+            item.getCreatedAt().getMonth().getValue() == selectedYearAndMounth.getMonth())
+            {items.add(item); }
+        }
+        items.sort(Item.PriceComparator);
+        model.addAttribute("items", items);
+        model.addAttribute("products", productService.findAll());
+        model.addAttribute("dates", dates());
 
         return "home/productReports";
     }
@@ -118,12 +144,25 @@ public class MainController {
     }
 
     @PostMapping(value ="/employeeReports")
-    public String addProduct(@RequestParam Map<String, String> reqParam){
+    public String employeeReport(@RequestParam Map<String, String> reqParam){
 
         String employeeId= reqParam.get("employeeId");
+        String dateId= reqParam.get("dateId");
         reportEmployee=employeeService.findById(Long.parseLong(employeeId));
+        selectedYearAndMounth=yearAndMonths.get(Integer.parseInt(dateId));
 
         return"redirect:/employeeReports";
+    }
+
+    @PostMapping(value ="/productReports")
+    public String productReport(@RequestParam Map<String, String> reqParam){
+
+        String productId= reqParam.get("productId");
+        String dateId= reqParam.get("dateId");
+        reportProduct=productService.findById(Long.parseLong(productId));
+        selectedYearAndMounth=yearAndMonths.get(Integer.parseInt(dateId));
+
+        return"redirect:/productReports";
     }
 
     @GetMapping("/deleteItem={itemId}")
@@ -149,9 +188,29 @@ public class MainController {
         for (Item item: purchase.getItems()) {
             if(item.getId().equals(itemId)){item.setQuantity(quantity);}
         }
-   //     purchase.getItems().get(itemId.intValue()).setQuantity(quantity);
 
         return "redirect:/";
+    }
+
+    public List<YearAndMonth> dates(){
+        yearAndMonths=new ArrayList<>();
+        YearAndMonth yearAndMonth;
+        int id=0;
+        boolean contains=false;
+        for (Item i: itemService.findAll()) {
+            contains=false;
+            for (YearAndMonth y:yearAndMonths) {
+                if(y.getYear() == i.getModifiedAt().getYear() && y.getMonth() == i.getModifiedAt().getMonth().getValue())
+                {contains= true;}
+            }
+            if(!contains){
+                yearAndMonth = new YearAndMonth(id, i.getModifiedAt().getYear(), i.getModifiedAt().getMonth().getValue());
+                yearAndMonths.add(yearAndMonth);
+                id++;}
+
+        }
+
+        return yearAndMonths;
     }
 
 }
