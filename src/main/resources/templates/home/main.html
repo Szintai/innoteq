@@ -17,7 +17,7 @@
 		<option  th:text="${product.name} + ' (' + ${product.price} +' Ft)'" th:value="${product.id}" name="productId"></option>
 	</div>
 </select>
-	<input type="number" name="quantity" placeholder="Quantity" required>
+	<input type="number" name="quantity" placeholder="Quantity" required min="1" step="1">
 	<p hidden><input type="number" id="employeeId" name="employeeId" ></p>
 	<p hidden><input type="number" id="productId" name="productId" ></p>
 	<input type="submit" name="submit" value="Add" />
@@ -35,11 +35,14 @@
 		</thead>
 		<tbody>
 		<tr th:each="item : ${purchase.items}">
+			<form method=post th:action="@{'/updateItem=' + ${item.id}}">
 		<td th:text="${item.product.name}"></td>
 		<td th:text="${item.price}+' Ft'"></td>
 		<td th:text="${item.quantity}+' db'"></td>
-		<td>Edit</td>
-		<td><a th:href="@{'/deleteItem=' + ${item.id}}">Delete</a></td>
+			<td><a th:href="@{'/deleteItem=' + ${item.id}}">Delete</a></td>
+				<td><input type="number" name="updateItem" placeholder="New quantity" min="1" step="1"  required></td>
+			<td><input type="submit" name="submit" value="Update" /></td>
+			</form>
 		</tr>
 		</tbody>
 
@@ -61,6 +64,16 @@ function validation(){
 	document.getElementById('productId').value=selectedProductId;
 
 }
+document.getElementById("editDiv").style.display = "none";
+function edit() {
+  var x = document.getElementById("editDiv");
+  if (x.style.display === "none") {
+    x.style.display = "block";
+  } else {
+    x.style.display = "none";
+  }
+}
+
 </script>
 
 

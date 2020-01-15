@@ -40,19 +40,33 @@ public class MainController {
     @GetMapping("/")
     public String index(Model model)
     {
-        if(purchase.getEmployee() != null){
+        if(!purchase.getItems().isEmpty()){
             List<Employee> employees=new ArrayList<>();
             employees.add(purchase.getEmployee());
             model.addAttribute("employees",employees);
 
-            model.addAttribute("products", productService.findAll());
+            List<Product> products=new ArrayList<>();
+
+          boolean contains=false;
+            for (Product product: productService.findAll()) {
+                contains=false;
+                for (Item item: purchase.getItems()) {
+                    if(item.getProduct().getId().equals(product.getId())){
+                        contains=true;
+                    }
+                }
+                if(!contains){products.add(product);}
+            }
+            model.addAttribute("products", products);
         }
         else {
             model.addAttribute("employees", employeeService.findAll());
 
             model.addAttribute("products", productService.findAll());
+
+
         }
-            model.addAttribute("purchase", purchase);
+        model.addAttribute("purchase", purchase);
 
         return "home/main";
     }
@@ -99,7 +113,6 @@ public class MainController {
           Item item=new Item(quantity, productService.findById(Long.parseLong(productId)));
           item.setId(new Long(purchase.getItems().size()));
           purchase.getItems().add(item);
-      //  purchase.getItems().get(purchase.getItems().size()-1).setId(new Long(purchase.getItems().size()-1));
 
         return "redirect:/";
     }
@@ -119,11 +132,24 @@ public class MainController {
         Item item=new Item();
         List<Item> items=new ArrayList<>();
         for (Item i: purchase.getItems()) {
-            
+
             if(!i.getId().equals(itemId)) items.add(i);
         }
 
         purchase.setItems(items);
+
+        return "redirect:/";
+    }
+
+
+    @PostMapping(value ="/updateItem={itemId}")
+    public String addProduct(@PathVariable("itemId") Long itemId,
+            @RequestParam("updateItem") int quantity ){
+
+        for (Item item: purchase.getItems()) {
+            if(item.getId().equals(itemId)){item.setQuantity(quantity);}
+        }
+   //     purchase.getItems().get(itemId.intValue()).setQuantity(quantity);
 
         return "redirect:/";
     }

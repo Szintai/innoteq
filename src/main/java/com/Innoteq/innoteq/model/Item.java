@@ -42,6 +42,7 @@ public class Item extends BaseEntity {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+        this.price=this.product.getPrice() *quantity;
     }
 
     public int getPrice() {
