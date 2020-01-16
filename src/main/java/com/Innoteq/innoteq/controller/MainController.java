@@ -9,7 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +26,7 @@ public class MainController {
     private Product reportProduct=new Product();
     private Product selectedProduct=null;
     private Purchase purchase=new Purchase();
-    private YearAndMonth selectedYearAndMounth;
+    private YearAndMonth selectedYearAndMonth;
     List<YearAndMonth> yearAndMonths=new ArrayList<>();
 
 
@@ -45,7 +44,6 @@ public class MainController {
             List<Employee> employees=new ArrayList<>();
             employees.add(purchase.getEmployee());
             model.addAttribute("employees",employees);
-
             List<Product> products=new ArrayList<>();
 
           boolean contains=false;
@@ -65,7 +63,6 @@ public class MainController {
 
             model.addAttribute("products", productService.findAll());
 
-
         }
         model.addAttribute("purchase", purchase);
 
@@ -77,12 +74,11 @@ public class MainController {
     {
         List<Item> items=new ArrayList<>();
         int consumption=0;
-        Employee employee=null;
 
         if(reportEmployee !=null)
         { for (Purchase p:reportEmployee.getPurchases()) {
             for (Item i : p.getItems()) {
-                if (i.getCreatedAt().getYear() == selectedYearAndMounth.getYear() && i.getCreatedAt().getMonth().getValue() == selectedYearAndMounth.getMonth()) {
+                if (i.getCreatedAt().getYear() == selectedYearAndMonth.getYear() && i.getCreatedAt().getMonth().getValue() == selectedYearAndMonth.getMonth()) {
                     consumption += i.getPrice();
                 }
             }
@@ -102,8 +98,8 @@ public class MainController {
         List<Item> items=new ArrayList<>();
 
         for (Item item: itemService.findAll()) {
-            if(item.getProduct().getId().equals(reportProduct.getId()) && item.getCreatedAt().getYear() == selectedYearAndMounth.getYear() &&
-            item.getCreatedAt().getMonth().getValue() == selectedYearAndMounth.getMonth())
+            if(item.getProduct().getId().equals(reportProduct.getId()) && item.getCreatedAt().getYear() == selectedYearAndMonth.getYear() &&
+            item.getCreatedAt().getMonth().getValue() == selectedYearAndMonth.getMonth())
             {items.add(item); }
         }
         items.sort(Item.PriceComparator);
@@ -119,6 +115,10 @@ public class MainController {
     public String purchase(){
 
         Employee employee=employeeService.findById(purchase.getEmployee().getId());
+        for (Item i: purchase.getItems()) {
+            i.setId(null);
+            i.setPurchase(purchase);
+        }
         employee.getPurchases().add(purchase);
         employeeService.save(employee);
         purchase=new Purchase();
@@ -149,7 +149,7 @@ public class MainController {
         String employeeId= reqParam.get("employeeId");
         String dateId= reqParam.get("dateId");
         reportEmployee=employeeService.findById(Long.parseLong(employeeId));
-        selectedYearAndMounth=yearAndMonths.get(Integer.parseInt(dateId));
+        selectedYearAndMonth =yearAndMonths.get(Integer.parseInt(dateId));
 
         return"redirect:/employeeReports";
     }
@@ -160,7 +160,7 @@ public class MainController {
         String productId= reqParam.get("productId");
         String dateId= reqParam.get("dateId");
         reportProduct=productService.findById(Long.parseLong(productId));
-        selectedYearAndMounth=yearAndMonths.get(Integer.parseInt(dateId));
+        selectedYearAndMonth =yearAndMonths.get(Integer.parseInt(dateId));
 
         return"redirect:/productReports";
     }
